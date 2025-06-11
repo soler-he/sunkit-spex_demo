@@ -1,0 +1,9 @@
+astropy @ git+https://github.com/jajmitchell/astropy.git@v7.1
+sunkit-spex @ https://github.com/sunpy/sunkit-spex.git
+jupyter
+matplotlib
+moviepy
+numba
+stixpy
+stixdcpy
+sunpy[all]
