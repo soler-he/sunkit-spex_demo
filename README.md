@@ -1,6 +1,14 @@
 # Demonstration of sunkit-spex
 Demonstration of the development version of sunkit-spex, a Python package for solar X-ray spectroscopy
 
+#### Sunkit-spex is currently under active development and does not yet have a stable release version.
+
+There are currently two versions of sunkit-spex, the legacy and the development version. 
+
+The legacy version has more functionality than the development version, however is no loger supported due to active work on the development version which has adopted a new API. The development version is based around the Astropy model class API and supports fitting with both the Astropy and Scipy fitting frameworks. 
+
+This demonstration is intended to display the progress made on the sunkit-spex development version, and currently relies on a custom fork of both astropy and sunkit-spex. 
+
 ## Usage
 
 You can run the Jupyter Notebooks either on the project's JupyterHub server or locally on your computer. If you are new to Jupyter Notebooks, the official documentation will give you more info about [What is the Jupyter Notebook?](https://jupyter-notebook.readthedocs.io/en/stable/examples/Notebook/What%20is%20the%20Jupyter%20Notebook.html) and [Running Code](https://jupyter-notebook.readthedocs.io/en/stable/examples/Notebook/Running%20Code.html) with it.
