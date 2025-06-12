@@ -29,6 +29,13 @@ def plot_fit_results(count_edges,photon_edges,observed_counts,observed_counts_er
         'axes.labelsize': 16 # This sets both x and y axis label sizes
     })
 
+    tfs = 14
+
+    colour_tot = 'k'
+    colour_thermal = 'C0'
+    colour_nonthermal = 'C1'
+    colour_albedo = 'grey'
+
     fig = plt.figure(figsize=(w,h))
 
     rect_dat = [left,bottom+(1/4)*height+1*spacing,width,(3/4)*height]
@@ -42,30 +49,43 @@ def plot_fit_results(count_edges,photon_edges,observed_counts,observed_counts_er
 
     dict = {}
 
-    if 'ThermalEmission' in model_names:
 
-        eval = (((model['ThermalEmission'] * model['InverseSquareFluxScaling'] ) ) | model['SRM'])(photon_edges)
+    if 'ThermalEmission' in model_names and 'ThickTarget' in model_names:
+
+        eval_noalbedo = ((((model['ThermalEmission'] + model['ThickTarget']) * model['InverseSquareFluxScaling'] ) ) | model['SRM'])(photon_edges)
+        eval_albedo = ((((model['ThermalEmission'] + model['ThickTarget']) * model['InverseSquareFluxScaling'] ) | model['Albedo'] ) | model['SRM'])(photon_edges)
+        eval_thermal = (((model['ThermalEmission'] * model['InverseSquareFluxScaling'] ) ) | model['SRM'])(photon_edges)
+        eval_nonthermal = (((model['ThickTarget'] * model['InverseSquareFluxScaling'] )  ) | model['SRM'] )(photon_edges)
+
+        albedo = eval_albedo - eval_noalbedo
+
+        ax_dat.stairs(eval_thermal.value,count_edges.value,label='ThermalEmission',baseline=None,linewidth=2,alpha=0.9,zorder=10000, color = colour_thermal)
+        ax_dat.stairs(eval_nonthermal.value,count_edges.value,label='ThickTarget',baseline=None, linewidth=2,alpha=0.9,zorder=10000, color = colour_nonthermal)
+        ax_dat.stairs(albedo.value,count_edges.value,label='Albedo',baseline=None, linewidth=2,alpha=0.9,zorder=10000,color=colour_albedo)
+
+        ax_dat.text(0.75,0.7,f'Temp = {np.round(model.temperature_0.value,1)} {model.temperature_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
+        ax_dat.text(0.75,0.65,f'EM = {np.round(model.emission_measure_0.value,3)} {r'$\mathrm{\times 10^{49}}$'}{model.emission_measure_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
+        ax_dat.text(0.75,0.6,f'Index = {np.round(model.q_1.value,1)}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
+        ax_dat.text(0.75,0.55,f'E_c = {np.round(model.low_e_cutoff_1.value,1)} {model.low_e_cutoff_1.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
+        ax_dat.text(0.75,0.5,f'e Flux = {np.round(model.total_eflux_1.value,1)} {model.total_eflux_1.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
+
+
+    if 'ThermalEmission' in model_names and 'ThickTarget' not in model_names:
+
+        eval_noalbedo = (((model['ThermalEmission'] * model['InverseSquareFluxScaling'] ) ) | model['SRM'])(photon_edges)
         eval_albedo = (((model['ThermalEmission'] * model['InverseSquareFluxScaling'] ) | model['Albedo'] ) | model['SRM'])(photon_edges)
+        eval_thermal = (((model['ThermalEmission'] * model['InverseSquareFluxScaling'] ) ) | model['SRM'])(photon_edges)
 
-        dict['ThermalEmission'] = [eval,eval_albedo] 
+        albedo = eval_albedo - eval_noalbedo
 
-        ax_dat.stairs(eval.value,count_edges.value,label='ThermalEmission',baseline=None,linewidth=2,alpha=0.9,zorder=10000)
+        ax_dat.stairs(eval_thermal.value,count_edges.value,label='ThermalEmission',baseline=None, linewidth=2,alpha=0.9,zorder=10000, color=colour_thermal)
+        ax_dat.stairs(albedo.value,count_edges.value,label='Albedo',baseline=None, linewidth=2,alpha=0.9,zorder=10000, color=colour_albedo)
+        
 
-    if 'ThickTarget' in model_names:
+        ax_dat.text(0.75,0.7,f'Temp = {np.round(model.temperature_0.value,1)} {model.temperature_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
+        ax_dat.text(0.75,0.65,f'EM = {np.round(model.emission_measure_0.value,3)} {r'$\mathrm{\times 10^{49}}$'}{model.emission_measure_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
 
-        eval = (((model['ThickTarget'] * model['InverseSquareFluxScaling'] )  ) | model['SRM'] )(photon_edges)
-        eval_albedo = (((model['ThickTarget'] * model['InverseSquareFluxScaling'] ) | model['Albedo']  ) | model['SRM'] )(photon_edges)
-
-        dict['ThickTarget'] = [eval,eval_albedo] 
-
-        ax_dat.stairs(eval.value,count_edges.value,label='ThickTarget',baseline=None, linewidth=2,alpha=0.9,zorder=10000)
-    
-
-    albedo =  (dict['ThermalEmission'][1] + dict['ThickTarget'][1]) - (dict['ThermalEmission'][0] + dict['ThickTarget'][0])
-
-
-
-    ax_dat.stairs(albedo.value,count_edges.value,label='Albedo',baseline=None, linewidth=2,alpha=0.9,zorder=10000,color='grey')
+   
     ax_dat.set_ylim(0.8*np.min(observed_counts.value),2*np.max(observed_counts.value))
     ax_dat.legend(frameon=False,fontsize=14)
     ax_dat.loglog()
@@ -74,13 +94,6 @@ def plot_fit_results(count_edges,photon_edges,observed_counts,observed_counts_er
 
     params_free = {k: v for k, v in params_fixed_free.items() if v is False}
 
-    tfs = 14
-
-    ax_dat.text(0.7,0.7,f'Temp = {np.round(model.temperature_0.value,1)*10} M{model.temperature_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color='C0')
-    ax_dat.text(0.7,0.65,f'EM = {np.round(model.emission_measure_0.value,3)} {r'$\mathrm{\times 10^{50}}$'}{model.emission_measure_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color='C0')
-    ax_dat.text(0.7,0.6,f'Index = {np.round(model.q_1.value,1)}',transform=ax_dat.transAxes,fontsize=tfs,color='C1')
-    ax_dat.text(0.7,0.55,f'E_c = {np.round(model.low_e_cutoff_1.value,1)} {model.low_e_cutoff_1.unit}',transform=ax_dat.transAxes,fontsize=tfs,color='C1')
-    ax_dat.text(0.7,0.5,f'e Flux = {np.round(model.total_eflux_1.value,1)} {model.total_eflux_1.unit}',transform=ax_dat.transAxes,fontsize=tfs,color='C1')
 
     dof = len(observed_counts) - len(params_free)
 
