@@ -1,5 +1,5 @@
-astropy @ git+https://github.com/jajmitchell/astropy.git@v7.1
-sunkit-spex @ https://github.com/sunpy/sunkit-spex.git
+astropy @ git+https://github.com/jajmitchell/astropy.git@astropy_sunkit-spex
+sunkit-spex @ git+https://github.com/samaloney/sunkit-spex@docs-spec-object
 jupyter
 matplotlib
 moviepy
