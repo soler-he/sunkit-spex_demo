@@ -63,11 +63,11 @@ def plot_fit_results(count_edges,photon_edges,observed_counts,observed_counts_er
         ax_dat.stairs(eval_nonthermal.value,count_edges.value,label='ThickTarget',baseline=None, linewidth=2,alpha=0.9,zorder=10000, color = colour_nonthermal)
         ax_dat.stairs(albedo.value,count_edges.value,label='Albedo',baseline=None, linewidth=2,alpha=0.9,zorder=10000,color=colour_albedo)
 
-        ax_dat.text(0.75,0.7,f'Temp = {np.round(model.temperature_0.value,1)} {model.temperature_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
-        ax_dat.text(0.75,0.65,f'EM = {np.round(model.emission_measure_0.value,3)} {r'$\mathrm{\times 10^{49}}$'}{model.emission_measure_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
-        ax_dat.text(0.75,0.6,f'Index = {np.round(model.q_1.value,1)}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
-        ax_dat.text(0.75,0.55,f'E_c = {np.round(model.low_e_cutoff_1.value,1)} {model.low_e_cutoff_1.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
-        ax_dat.text(0.75,0.5,f'e Flux = {np.round(model.total_eflux_1.value,1)} {model.total_eflux_1.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
+        ax_dat.text(0.77,0.7,f'Temp = {np.round(model.temperature_0.value,1)} {model.temperature_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
+        ax_dat.text(0.77,0.65,f'EM = {np.round(model.emission_measure_0.value,3)} {r'$\mathrm{\times \: 10^{49} \: cm^{-3}}$'}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
+        ax_dat.text(0.77,0.6,f'Index = {np.round(model.p_1.value,1)}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
+        ax_dat.text(0.77,0.55,f'E_c = {np.round(model.low_e_cutoff_1.value,1)} {model.low_e_cutoff_1.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
+        ax_dat.text(0.77,0.5,f'e Flux = {np.round(model.total_eflux_1.value,1)} {r'$\mathrm{\times \: 10^{35} \: e \: s^{-1}}$'}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_nonthermal)
 
 
     if 'ThermalEmission' in model_names and 'ThickTarget' not in model_names:
@@ -82,8 +82,8 @@ def plot_fit_results(count_edges,photon_edges,observed_counts,observed_counts_er
         ax_dat.stairs(albedo.value,count_edges.value,label='Albedo',baseline=None, linewidth=2,alpha=0.9,zorder=10000, color=colour_albedo)
         
 
-        ax_dat.text(0.75,0.7,f'Temp = {np.round(model.temperature_0.value,1)} {model.temperature_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
-        ax_dat.text(0.75,0.65,f'EM = {np.round(model.emission_measure_0.value,3)} {r'$\mathrm{\times 10^{49}}$'}{model.emission_measure_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
+        ax_dat.text(0.77,0.7,f'Temp = {np.round(model.temperature_0.value,1)} {model.temperature_0.unit}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
+        ax_dat.text(0.77,0.65,f'EM = {np.round(model.emission_measure_0.value,3)} {r'$\mathrm{\times \: 10^{49} \: cm^{-3}}$'}',transform=ax_dat.transAxes,fontsize=tfs,color=colour_thermal)
 
    
     ax_dat.set_ylim(0.8*np.min(observed_counts.value),2*np.max(observed_counts.value))
